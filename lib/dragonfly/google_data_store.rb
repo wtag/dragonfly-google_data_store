@@ -15,7 +15,7 @@ module Dragonfly
     def write(object, opts = {})
       ensure_bucket_exists
 
-      uid = opts[:path] || Dragonfly::GoogleDataStore.generate_uid
+      uid = opts[:path] || Dragonfly::GoogleDataStore.generate_uid(object.name || 'file')
 
       bucket.create_file object.tempfile.path, uid, metadata: object.meta
 
@@ -40,8 +40,8 @@ module Dragonfly
       nil
     end
 
-    def self.generate_uid
-      "#{Time.now.strftime('%Y/%m/%d/%H/%M')}/#{SecureRandom.uuid}"
+    def self.generate_uid(name)
+      "#{Time.now.strftime('%Y/%m/%d/%H/%M')}/#{SecureRandom.uuid}/#{name}"
     end
 
     private
