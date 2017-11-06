@@ -4,12 +4,13 @@ require 'google/cloud/storage'
 
 module Dragonfly
   class GoogleDataStore
-    attr_reader :project, :keyfile, :bucket_name
+    attr_reader :project, :keyfile, :bucket_name, :root_path
 
     def initialize(opts)
       @project = opts[:project]
       @keyfile = opts[:keyfile]
       @bucket_name = opts[:bucket]
+      @root_path = opts[:root_path]
     end
 
     def write(object, opts = {})
@@ -17,13 +18,13 @@ module Dragonfly
 
       uid = opts[:path] || Dragonfly::GoogleDataStore.generate_uid
 
-      bucket.create_file object.tempfile.path, uid, metadata: object.meta
+      bucket.create_file object.tempfile.path, full_path(uid), metadata: object.meta
 
       uid
     end
 
     def read(uid)
-      file = bucket.file uid
+      file = bucket.file full_path(uid)
       content = file.download
       content.rewind
       [
@@ -35,7 +36,8 @@ module Dragonfly
     end
 
     def destroy(uid)
-      bucket.file(uid).delete
+      file = bucket.file full_path(uid)
+      file.delete
     rescue
       nil
     end
@@ -45,6 +47,10 @@ module Dragonfly
     end
 
     private
+
+    def full_path(uid)
+      File.join *[root_path, uid].compact
+    end
 
     def bucket
       @bucket ||= storage.bucket(bucket_name)
