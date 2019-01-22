@@ -26,7 +26,7 @@ module Dragonfly
     def read(uid)
       file = bucket.file full_path(uid)
 
-      metadata = file.metadata
+      metadata = file.metadata.dup
       metadata['name'] ||= File.basename(file.name)
 
       content = file.download
