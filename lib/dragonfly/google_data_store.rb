@@ -25,20 +25,22 @@ module Dragonfly
 
     def read(uid)
       file = bucket.file full_path(uid)
+
+      metadata = file.metadata
+      metadata['name'] ||= File.basename(file.name)
+
       content = file.download
       content.rewind
-      [
-        content.read,
-        file.metadata,
-      ]
-    rescue
+
+      [content.read, metadata]
+    rescue StandardError
       nil
     end
 
     def destroy(uid)
       file = bucket.file full_path(uid)
       file.delete
-    rescue
+    rescue StandardError
       nil
     end
 
