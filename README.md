@@ -32,7 +32,8 @@ Dragonfly.app.configure do
   datastore :google,
             project: 'project-id-here',
             bucket: 'bucket-name-here',
-            keyfile: 'path/to/your/key/file.json'
+            keyfile: 'path/to/your/key/file.json',
+            root_path: 'root/path'
 end
 ```
 
@@ -50,4 +51,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
