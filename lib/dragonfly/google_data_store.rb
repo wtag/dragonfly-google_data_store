@@ -18,7 +18,12 @@ module Dragonfly
 
       uid = opts[:path] || Dragonfly::GoogleDataStore.generate_uid
 
-      bucket.create_file object.tempfile.path, full_path(uid), metadata: object.meta
+      bucket.create_file(
+        object.tempfile.path,
+        full_path(uid),
+        metadata: object.meta,
+        content_type: object.mime_type
+      )
 
       uid
     end
